@@ -1,0 +1,5 @@
+---
+interface Props {expression:string;example:string;}
+const {expression,example}=Astro.props;
+---
+<figure class="formula"><div class="equation" role="math" aria-label={expression}>{expression}</div><figcaption>{example}</figcaption></figure>

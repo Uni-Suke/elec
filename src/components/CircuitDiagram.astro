@@ -1,0 +1,5 @@
+---
+interface Props {name:string;caption:string;}
+const {name,caption}=Astro.props;
+---
+<figure class="article-diagram" tabindex="0" aria-label="回路図。小さい画面では横にスクロールできます"><img src={`/diagrams/${name}.svg`} alt={caption} width="720" height="350" loading="lazy" style="width:100%;height:auto;display:block;background:#f1f6f2;border-radius:4px"/><figcaption>{caption}</figcaption><a class="figure-link" href={`/diagrams/${name}.svg`}>図を原寸で開く ↗</a></figure>

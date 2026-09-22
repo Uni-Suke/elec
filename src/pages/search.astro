@@ -1,0 +1,23 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Icon from '../components/Icon.astro';
+import {categories} from '../data/categories';
+import {getCollection} from 'astro:content';
+const all=await getCollection('lessons');
+---
+<Layout title="教材を検索" active="search"><div class="content-wrap"><nav class="breadcrumb" aria-label="パンくず"><a href="/">ホーム</a><span>/</span><span>教材を検索</span></nav><header class="page-heading"><div class="eyebrow">FIND YOUR NEXT DISCOVERY</div><h1>気になる言葉から、探そう。</h1><p>部品名、測定器、回路の名前。教材の本文まで検索します。</p></header><form class="search-form" role="search"><label class="search-field"><Icon name="search"/><span class="only-sr">キーワード</span><input id="query" name="q" type="search" placeholder="例：MOSFET、電流測定、RC" autocomplete="off"/></label><label><span class="only-sr">章で絞り込む</span><select id="category-filter" name="category"><option value="">すべての章</option>{categories.map(c=><option value={c.id}>{c.name}</option>)}</select></label><button type="submit" class="button primary">検索</button></form><div class="search-suggestions"><span class="search-status">よく使う言葉</span>{['GND','MOSFET','オシロスコープ','デカップリング','設計'].map(q=><button type="button" data-query={q}>{q}</button>)}</div><p id="search-status" class="search-status" role="status" aria-live="polite">検索の準備中…</p><div id="results" class="lesson-list"></div><noscript><p>検索にはJavaScriptが必要です。以下の全教材一覧からも探せます。</p><ul>{all.map(e=><li><a href={`/learn/${e.id}/`}>{e.data.title}</a></li>)}</ul></noscript></div></Layout>
+<script>
+type Entry={id:string;title:string;description:string;category:string;tags:string[];body:string;minutes:number};
+const query=document.querySelector<HTMLInputElement>('#query')!;
+const filter=document.querySelector<HTMLSelectElement>('#category-filter')!;
+const results=document.querySelector<HTMLElement>('#results')!;
+const status=document.querySelector<HTMLElement>('#search-status')!;
+let entries:Entry[]=[];let loaded=false;
+const normalize=(s:string)=>s.normalize('NFKC').toLowerCase();
+function search(){if(!loaded)return;const words=normalize(query.value.trim()).split(/\s+/).filter(Boolean);const matches=entries.filter(e=>(!filter.value||filter.value===e.category)&&words.every(w=>normalize([e.title,e.description,...e.tags,e.body].join(' ')).includes(w))).sort((a,b)=>Number(words.some(w=>normalize(b.title).includes(w)))-Number(words.some(w=>normalize(a.title).includes(w))));results.replaceChildren();status.textContent=words.length?`「${query.value.trim()}」に一致する教材：${matches.length}件`:`${matches.length}件の教材`;for(const e of matches){const link=document.createElement('a');link.href=`/learn/${e.id}/`;link.className='lesson-row';const div=document.createElement('div');const title=document.createElement('h2');title.textContent=e.title;const desc=document.createElement('p');desc.textContent=e.description;const meta=document.createElement('div');meta.className='row-meta';meta.textContent=`${e.minutes}分 · ${e.tags.slice(0,4).join(' / ')}`;div.append(title,desc,meta);link.append(div);results.append(link)}if(!matches.length){const p=document.createElement('p');p.className='empty-state';p.textContent='見つかりませんでした。別の言葉に変えるか、章の絞り込みを解除してみてください。';results.append(p)}const params=new URLSearchParams();if(query.value.trim())params.set('q',query.value.trim());if(filter.value)params.set('category',filter.value);history.replaceState(null,'',`/search/${params.size?'?'+params:''}`)}
+const params=new URLSearchParams(location.search);query.value=params.get('q')||'';filter.value=params.get('category')||'';
+document.querySelector('form')?.addEventListener('submit',e=>{e.preventDefault();search()});
+let timer:ReturnType<typeof setTimeout>;query.addEventListener('input',()=>{clearTimeout(timer);timer=setTimeout(search,120)});filter.addEventListener('change',search);
+document.querySelectorAll<HTMLButtonElement>('[data-query]').forEach(b=>b.addEventListener('click',()=>{query.value=b.dataset.query||'';search();query.focus()}));
+fetch('/search-index.json').then(r=>{if(!r.ok)throw new Error('index');return r.json()}).then((data:Entry[])=>{entries=data;loaded=true;search()}).catch(()=>{status.textContent='検索データを読み込めませんでした。再読み込みするか、左の章一覧から教材を開いてください。'});
+</script>

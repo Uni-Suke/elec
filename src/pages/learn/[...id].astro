@@ -1,0 +1,38 @@
+---
+import {getCollection,render} from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import {categories,categoryById} from '../../data/categories';
+import Callout from '../../components/Callout.astro';
+import Quiz from '../../components/Quiz.astro';
+import Formula from '../../components/Formula.astro';
+import CircuitDiagram from '../../components/CircuitDiagram.astro';
+import Icon from '../../components/Icon.astro';
+export async function getStaticPaths(){return(await getCollection('lessons')).map(lesson=>({params:{id:lesson.id},props:{lesson}}));}
+const {lesson}=Astro.props;
+const {Content,headings}=await render(lesson);
+const d=lesson.data;
+const category=categoryById(d.category);
+const all=(await getCollection('lessons')).sort((a,b)=>categories.findIndex(c=>c.id===a.data.category)-categories.findIndex(c=>c.id===b.data.category)||a.data.order-b.data.order);
+const idx=all.findIndex(e=>e.id===lesson.id);
+const related=d.related.map(id=>all.find(e=>e.id===id)).filter(e=>e!==undefined);
+---
+<Layout title={d.title} description={d.description} active={lesson.id==='safety'?'safety':d.category}>
+<div class="content-wrap"><nav class="breadcrumb" aria-label="パンくず"><a href="/">ホーム</a><span>/</span><a href={`/category/${d.category}/`}>{category.name}</a><span>/</span><span>{d.level}</span></nav>
+<div class="reading-layout"><article class="article-main"><header class="article-header"><span class="tag">{category.name}</span><h1>{d.title}</h1><p class="description">{d.description}</p><div class="article-meta"><span><Icon name="clock" size={15}/>{d.minutes}分で読む</span><span>{d.level}</span><span>内容確認 {d.reviewed}</span></div></header>
+<div class="goal-box"><strong>この教材でできるようになること</strong><ul>{d.objectives.map(o=><li>{o}</li>)}</ul></div>
+{d.warning&&<Callout kind="warning"><p>{d.warning}</p></Callout>}
+{d.diagram&&<CircuitDiagram name={d.diagram} caption={d.diagramCaption||d.title}/>}
+{d.formula&&<Formula {...d.formula}/>}
+<div class="prose"><Content/></div>
+<Quiz {...d.quiz}/>
+{related.length>0&&<section class="related"><h2>知識をつなげる</h2>{related.map(e=><a href={`/learn/${e.id}/`}>{e.data.title} <span>↗</span></a>)}</section>}
+<nav class="prev-next" aria-label="前後の教材">{all[idx-1]?<a href={`/learn/${all[idx-1].id}/`}><small>← 前の教材</small>{all[idx-1].data.title}</a>:<a href="/roadmap/"><small>学習の入口</small>ロードマップに戻る</a>}{all[idx+1]?<a href={`/learn/${all[idx+1].id}/`}><small>次の教材 →</small>{all[idx+1].data.title}</a>:<a href="/roadmap/"><small>学習を振り返る</small>ロードマップに戻る</a>}</nav>
+</article><nav class="toc" aria-label="この記事の目次"><strong>この記事の目次</strong>{headings.filter(h=>h.depth===2).map(h=><a href={`#${h.slug}`}>{h.text}</a>)}<a href="#quiz-title">理解度チェック</a></nav></div></div>
+</Layout>
+<script>
+// A table-of-contents link can target a heading inside a closed design solution.
+function revealTarget(hash:string){let id:string;try{id=decodeURIComponent(hash.slice(1))}catch{return}const target=document.getElementById(id);if(!target)return;let parent=target.parentElement;while(parent){if(parent instanceof HTMLDetailsElement)parent.open=true;parent=parent.parentElement;}target.scrollIntoView({block:'start'});}
+document.querySelectorAll<HTMLAnchorElement>('.toc a[href^="#"]').forEach(a=>a.addEventListener('click',()=>{revealTarget(a.hash)}));
+window.addEventListener('hashchange',()=>revealTarget(location.hash));
+if(location.hash)revealTarget(location.hash);
+</script>

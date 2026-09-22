@@ -1,11 +1,21 @@
 ---
-import Welcome from '../components/Welcome.astro';
 import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+import Icon from '../components/Icon.astro';
+import FilterDiagram from '../components/FilterDiagram.astro';
+import {categories} from '../data/categories';
+const purposes=[{icon:'book',title:'はじめて学ぶ',sub:'ゼロから、順番に',href:'/roadmap/'},{icon:'resistor',title:'部品を調べる',sub:'働きと選び方を知る',href:'/category/components/'},{icon:'scope',title:'測定器を使う',sub:'つなぎ方から、読み方まで',href:'/category/measurement/'},{icon:'circuit',title:'回路図を読む',sub:'つながりの意味を理解する',href:'/learn/reading-schematics/'},{icon:'search',title:'故障を調べる',sub:'動かない理由を見つける',href:'/category/troubleshooting/'}];
 ---
-
 <Layout>
-	<Welcome />
+<div class="home-content">
+<div class="eyebrow top-eyebrow"><span class="tiny-line"></span> THE ELECTRONICS LEARNING NOTE</div>
+<section class="hero-section">
+<div class="hero-copy"><div class="pill"><span></span> はじめの一歩から、回路設計まで</div><h1>「わかる」を、<br/>「<em>つくれる</em>」に。</h1><p>部品を知る。回路を読む。測って確かめる。<br/>電子回路のきほんを、一歩ずつ身につけよう。</p><a href="/roadmap/" class="button primary">学習をはじめる <Icon name="arrow" size={18}/></a><div class="hero-meta"><span><Icon name="check" size={15}/>予備知識なしでOK</span><span><Icon name="shield" size={15}/>低電圧で実践</span></div></div>
+<FilterDiagram hero/>
+</section>
+<section class="purpose-section" aria-labelledby="purpose-title"><h2 id="purpose-title" class="small-heading">今日は、何を学びたい？<span>目的から見つける</span></h2><div class="purpose-grid">{purposes.map(p=><a href={p.href} class="purpose-card"><Icon name={p.icon} size={23}/><strong>{p.title}</strong><small>{p.sub}</small><span class="purpose-arrow">↗</span></a>)}</div></section>
+<section class="chapters-section"><div class="section-heading"><div><div class="eyebrow">LEARNING PATH</div><h2>知識がつながる、7つのステップ</h2><p>基礎から順番に。気になる章からでも。</p></div><a href="/roadmap/" class="text-link">ロードマップを見る <Icon name="arrow" size={17}/></a></div><div class="chapter-grid">{categories.map((c,i)=><a href={`/category/${c.id}/`} class={`chapter-card ${c.color}`}><div class="chapter-top"><span class="chapter-icon"><Icon name={c.icon} size={25}/></span><span class="chapter-number">CHAPTER {String(i+1).padStart(2,'0')}</span></div><h3>{c.name}</h3><p>{c.description}</p><div class="chapter-bottom"><span>{c.en}</span><Icon name="arrow" size={18}/></div></a>)}</div></section>
+<section class="featured-section"><div class="section-heading"><div><div class="eyebrow">START WITH A QUESTION</div><h2>その「なぜ？」から、学ぼう。</h2></div></div><div class="feature-grid"><a href="/learn/multimeter/" class="feature-card"><span class="tag orange">電子計測</span><h3>電圧は並列、電流は直列。<br/>どうして測り方が違う？</h3><p>測定器の中身を知ると、つなぎ方が見えてくる。</p><span class="text-link">テスターの基本を読む <Icon name="arrow" size={18}/></span></a><a href="/learn/transistors/" class="feature-card"><span class="tag blue">電子部品</span><h3>BJTとMOSFET。<br/>どちらを選べばいい？</h3><p>電流で制御するか、電圧で制御するか。その先へ。</p><span class="text-link">違いと使い分けを読む <Icon name="arrow" size={18}/></span></a></div></section>
+<section class="lab-banner"><div class="lab-banner-icon"><Icon name="flask" size={36}/></div><div><div class="eyebrow">YOUR FIRST EXPERIMENT</div><h2>机の上を、小さな実験室に。</h2><p>抵抗を測るところから始まる、8つの実験。</p></div><a class="button secondary" href="/category/experiments/">実験してみる <Icon name="arrow" size={18}/></a></section>
+<div class="safety-strip"><Icon name="shield" size={20}/><p>実験の前に、安全のきほんを。低電圧でも、短絡や発熱には注意が必要です。</p><a href="/learn/safety/">安全ガイド <span>↗</span></a></div>
+</div>
 </Layout>

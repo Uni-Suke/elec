@@ -1,0 +1,5 @@
+---
+interface Props {rows:{name:string;value:string;reason:string}[];caption?:string;}
+const {rows,caption='部品選定で確認する仕様'}=Astro.props;
+---
+<table class="spec-table"><caption>{caption}</caption><thead><tr><th>項目</th><th>値・条件</th><th>確認する理由</th></tr></thead><tbody>{rows.map(r=><tr><th>{r.name}</th><td>{r.value}</td><td>{r.reason}</td></tr>)}</tbody></table>

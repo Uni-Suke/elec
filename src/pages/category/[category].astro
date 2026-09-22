@@ -1,0 +1,10 @@
+---
+import {getCollection} from 'astro:content';
+import {categories} from '../../data/categories';
+import Layout from '../../layouts/Layout.astro';
+import Icon from '../../components/Icon.astro';
+export function getStaticPaths(){return categories.map((category,i)=>({params:{category:category.id},props:{category,index:i}}));}
+const {category,index}=Astro.props;
+const lessons=(await getCollection('lessons')).filter(e=>e.data.category===category.id).sort((a,b)=>a.data.order-b.data.order);
+---
+<Layout title={category.name} description={category.description} active={category.id}><div class="content-wrap"><nav class="breadcrumb" aria-label="パンくず"><a href="/">ホーム</a><span>/</span><a href="/roadmap/">学習ロードマップ</a><span>/</span><span>{category.name}</span></nav><header class="page-heading"><div class="eyebrow">CHAPTER {String(index+1).padStart(2,'0')} / {category.en}</div><h1>{category.name}</h1><p>{category.description}</p><div class="goal-box"><strong>この章のゴール</strong>{category.goal}</div><p class="row-meta">{lessons.length}教材 · 読む時間の目安 {lessons.reduce((n,e)=>n+e.data.minutes,0)}分（実験時間を除く）</p></header><div class="lesson-list">{lessons.map((e,i)=><a href={`/learn/${e.id}/`} class="lesson-row"><span class="row-number">{String(i+1).padStart(2,'0')}</span><div><h2>{e.data.title}</h2><p>{e.data.description}</p><div class="row-meta">{e.data.level} <span>・</span> {e.data.minutes}分</div></div><Icon name="arrow" size={20}/></a>)}</div></div></Layout>
