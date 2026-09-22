@@ -4,4 +4,11 @@ interface Props {kind?:'warning'|'important'|'tip'|'mistake'|'measurement';title
 const {kind='tip',title}=Astro.props;
 const titles={warning:'安全のために',important:'ここが大切',tip:'理解のヒント',mistake:'よくある間違い',measurement:'測定のポイント'};
 ---
-<aside class:list={['callout',{warning:kind==='warning'||kind==='mistake'}]}><strong><Icon name={kind==='warning'?'shield':'bolt'} size={18}/>{title||titles[kind]}</strong><div><slot/></div></aside>
+<aside class:list={['callout',{warning:kind==='warning'||kind==='mistake'}]}>
+    <strong>
+        <Icon name={kind==='warning'?'shield':'bolt'} size={18}/>{title||titles[kind]}
+    </strong>
+        <div>
+            <slot/>
+        </div>
+</aside>

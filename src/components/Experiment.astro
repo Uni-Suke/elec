@@ -2,4 +2,8 @@
 interface Props {title:string;level:number;}
 const {title,level}=Astro.props;
 ---
-<section class="experiment-block"><span class="tag">LEVEL {level}</span><h2>{title}</h2><slot/></section>
+<section class="experiment-block">
+    <span class="tag">LEVEL {level}</span>
+    <h2>{title}</h2>
+    <slot/>
+</section>

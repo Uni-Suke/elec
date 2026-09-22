@@ -1,52 +1,180 @@
 ---
-import '../styles/global.css';
-import Icon from '../components/Icon.astro';
-import {categories} from '../data/categories';
-interface Props {title?:string;description?:string;active?:string;}
-const {title='電子回路を、ひとつずつ。',description='電子回路・電子部品・電子計測の日本語入門教材。基礎から実験、故障診断、仕様からの回路設計まで学べます。',active='home'}=Astro.props;
+import "../styles/global.css";
+import Icon from "../components/Icon.astro";
+import { categories } from "../data/categories";
+interface Props {
+  title?: string;
+  description?: string;
+  active?: string;
+}
+const {
+  title = "電子回路を、ひとつずつ。",
+  description = "電子回路・電子部品・電子計測の日本語入門教材。基礎から実験、故障診断、仕様からの回路設計まで学べます。",
+  active = "home",
+} = Astro.props;
 ---
+
 <!doctype html>
 <html lang="ja">
-<head>
-<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
-<meta name="description" content={description}/><meta name="color-scheme" content="light dark"/>
-<link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
-<title>{title} | 回路のきほん</title>
-<script is:inline>try{document.documentElement.dataset.theme=localStorage.getItem('circuit-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light')}catch{}</script>
-</head>
-<body>
-<a class="skip-link" href="#main">本文へ移動</a>
-<header class="header">
-<a href="/" class="brand"><span class="brand-mark"><Icon name="circuit" size={25}/></span><span>回路のきほん<small>CIRCUIT NOTES</small></span></a>
-<div class="header-caption">電子回路・電子部品・電子計測の学習ノート</div>
-<div class="header-actions"><a class="search-trigger" href="/search/"><Icon name="search" size={18}/><span>教材を検索</span><kbd>/</kbd></a><button id="theme-toggle" class="icon-button" aria-label="ダークモードに切り替える"><Icon name="moon"/></button><button id="menu-toggle" class="icon-button mobile-only" aria-label="学習メニューを開く" aria-expanded="false" aria-controls="sidebar"><Icon name="menu"/></button></div>
-</header>
-<div id="nav-backdrop" hidden></div>
-<aside id="sidebar" class="sidebar" aria-label="学習ナビゲーション">
-<nav>
-<a class:list={['nav-item',{selected:active==='home'}]} href="/" aria-current={active==='home'?'page':undefined}><Icon name="home" size={19}/>ホーム</a>
-<a class:list={['nav-item',{selected:active==='roadmap'}]} href="/roadmap/" aria-current={active==='roadmap'?'page':undefined}><Icon name="map" size={19}/>学習ロードマップ</a>
-<p class="nav-label">LEARN <span>学ぶ</span></p>
-{categories.map((c,i)=><a href={`/category/${c.id}/`} class:list={['nav-item',{selected:active===c.id}]} aria-current={active===c.id?'page':undefined}><Icon name={c.icon} size={19}/><span>{c.name}</span><small>{String(i+1).padStart(2,'0')}</small></a>)}
-<div class="nav-divider"></div>
-<a class:list={['nav-item',{selected:active==='safety'}]} href="/learn/safety/"><Icon name="shield" size={19}/>安全に学ぶために</a>
-<a class="nav-item" href="/about/"><Icon name="book" size={19}/>このサイトについて</a>
-</nav>
-<div class="sidebar-note"><span class="note-icon"><Icon name="bolt" size={18}/></span><strong>小さくつくる。<br/>測って、わかる。</strong><p>最初の一歩は、<br/>低電圧の回路から。</p><a href="/learn/lab-01/">はじめての実験 <span>↗</span></a></div>
-<div class="sidebar-bottom">A LITTLE THEORY. A LOT OF DISCOVERY.</div>
-</aside>
-<div class="page-shell"><main id="main"><slot/></main><footer><a href="/" class="footer-brand">回路のきほん</a><span>知る、読む、測る。そして、つくる。</span><a href="/learn/safety/">安全と学習の約束 <span>↗</span></a></footer></div>
-<script>
-const themeButton=document.querySelector<HTMLButtonElement>('#theme-toggle');
-function themeLabel(){if(themeButton)themeButton.setAttribute('aria-label',document.documentElement.dataset.theme==='dark'?'ライトモードに切り替える':'ダークモードに切り替える');}
-themeLabel();
-themeButton?.addEventListener('click',()=>{const theme=document.documentElement.dataset.theme==='dark'?'light':'dark';document.documentElement.dataset.theme=theme;try{localStorage.setItem('circuit-theme',theme)}catch{}themeLabel()});
-const menu=document.querySelector<HTMLButtonElement>('#menu-toggle');
-const backdrop=document.querySelector<HTMLElement>('#nav-backdrop');
-function closeMenu(){document.body.classList.remove('nav-open');menu?.setAttribute('aria-expanded','false');menu?.setAttribute('aria-label','学習メニューを開く');if(backdrop)backdrop.hidden=true;}
-menu?.addEventListener('click',()=>{const open=!document.body.classList.contains('nav-open');document.body.classList.toggle('nav-open',open);menu.setAttribute('aria-expanded',String(open));menu.setAttribute('aria-label',open?'学習メニューを閉じる':'学習メニューを開く');if(backdrop)backdrop.hidden=!open;});
-backdrop?.addEventListener('click',closeMenu);
-document.addEventListener('keydown',(e)=>{if(e.key==='Escape'){closeMenu()} if(e.key==='/'&&!/INPUT|TEXTAREA|SELECT/.test((e.target as HTMLElement).tagName)&&!(e.target as HTMLElement).isContentEditable){e.preventDefault();location.href='/search/'}});
-matchMedia('(min-width: 901px)').addEventListener('change',e=>{if(e.matches)closeMenu()});
-</script>
-</body></html>
+  <head>
+    <meta charset="utf-8" /><meta
+      name="viewport"
+      content="width=device-width, initial-scale=1"
+    />
+    <meta name="description" content={description} /><meta
+      name="color-scheme"
+      content="light dark"
+    />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title} | 回路のきほん</title>
+    <script is:inline>
+      try {
+        document.documentElement.dataset.theme =
+          localStorage.getItem("circuit-theme") ||
+          (matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light");
+      } catch {}
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">本文へ移動</a>
+    <header class="header">
+      <a href="/" class="brand"
+        ><span class="brand-mark"><Icon name="circuit" size={25} /></span><span
+          >回路のきほん<small>CIRCUIT NOTES</small></span
+        ></a
+      >
+      <div class="header-caption">電子回路・電子部品・電子計測の学習ノート</div>
+      <div class="header-actions">
+        <a class="search-trigger" href="/search/"
+          ><Icon name="search" size={18} /><span>教材を検索</span><kbd>/</kbd
+          ></a
+        ><button
+          id="theme-toggle"
+          class="icon-button"
+          aria-label="ダークモードに切り替える"><Icon name="moon" /></button
+        ><button
+          id="menu-toggle"
+          class="icon-button mobile-only"
+          aria-label="学習メニューを開く"
+          aria-expanded="false"
+          aria-controls="sidebar"><Icon name="menu" /></button>
+      </div>
+    </header>
+    <div id="nav-backdrop" hidden></div>
+    <aside id="sidebar" class="sidebar" aria-label="学習ナビゲーション">
+      <nav>
+        <a
+          class:list={["nav-item", { selected: active === "home" }]}
+          href="/"
+          aria-current={active === "home" ? "page" : undefined}
+          ><Icon name="home" size={19} />ホーム</a
+        >
+        <a
+          class:list={["nav-item", { selected: active === "roadmap" }]}
+          href="/roadmap/"
+          aria-current={active === "roadmap" ? "page" : undefined}
+          ><Icon name="map" size={19} />学習ロードマップ</a
+        >
+        <p class="nav-label">LEARN <span>学ぶ</span></p>
+        {
+          categories.map((c, i) => (
+            <a
+              href={`/category/${c.id}/`}
+              class:list={["nav-item", { selected: active === c.id }]}
+              aria-current={active === c.id ? "page" : undefined}
+            >
+              <>
+                <Icon name={c.icon} size={19} />
+                <span>{c.name}</span>
+                <small>{String(i + 1).padStart(2, "0")}</small>
+              </>
+            </a>
+          ))
+        }
+        <div class="nav-divider"></div>
+        <a
+          class:list={["nav-item", { selected: active === "safety" }]}
+          href="/learn/safety/"
+          ><Icon name="shield" size={19} />安全に学ぶために</a
+        >
+        <a class="nav-item" href="/about/"
+          ><Icon name="book" size={19} />このサイトについて</a
+        >
+      </nav>
+      <div class="sidebar-note">
+        <span class="note-icon"><Icon name="bolt" size={18} /></span><strong
+          >小さくつくる。<br />測って、わかる。</strong
+        ><p>最初の一歩は、<br />低電圧の回路から。</p><a href="/learn/lab-01/"
+          >はじめての実験 <span>↗</span></a>
+      </div>
+      <div class="sidebar-bottom">A LITTLE THEORY. A LOT OF DISCOVERY.</div>
+    </aside>
+    <div class="page-shell">
+      <main id="main"><slot /></main><footer>
+        <a href="/" class="footer-brand">回路のきほん</a><span
+          >知る、読む、測る。そして、つくる。</span
+        ><a href="/learn/safety/">安全と学習の約束 <span>↗</span></a>
+      </footer>
+    </div>
+    <script>
+      const themeButton =
+        document.querySelector<HTMLButtonElement>("#theme-toggle");
+      function themeLabel() {
+        if (themeButton)
+          themeButton.setAttribute(
+            "aria-label",
+            document.documentElement.dataset.theme === "dark"
+              ? "ライトモードに切り替える"
+              : "ダークモードに切り替える",
+          );
+      }
+      themeLabel();
+      themeButton?.addEventListener("click", () => {
+        const theme =
+          document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+        document.documentElement.dataset.theme = theme;
+        try {
+          localStorage.setItem("circuit-theme", theme);
+        } catch {}
+        themeLabel();
+      });
+      const menu = document.querySelector<HTMLButtonElement>("#menu-toggle");
+      const backdrop = document.querySelector<HTMLElement>("#nav-backdrop");
+      function closeMenu() {
+        document.body.classList.remove("nav-open");
+        menu?.setAttribute("aria-expanded", "false");
+        menu?.setAttribute("aria-label", "学習メニューを開く");
+        if (backdrop) backdrop.hidden = true;
+      }
+      menu?.addEventListener("click", () => {
+        const open = !document.body.classList.contains("nav-open");
+        document.body.classList.toggle("nav-open", open);
+        menu.setAttribute("aria-expanded", String(open));
+        menu.setAttribute(
+          "aria-label",
+          open ? "学習メニューを閉じる" : "学習メニューを開く",
+        );
+        if (backdrop) backdrop.hidden = !open;
+      });
+      backdrop?.addEventListener("click", closeMenu);
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          closeMenu();
+        }
+        if (
+          e.key === "/" &&
+          !/INPUT|TEXTAREA|SELECT/.test((e.target as HTMLElement).tagName) &&
+          !(e.target as HTMLElement).isContentEditable
+        ) {
+          e.preventDefault();
+          location.href = "/search/";
+        }
+      });
+      matchMedia("(min-width: 901px)").addEventListener("change", (e) => {
+        if (e.matches) closeMenu();
+      });
+    </script>
+  </body>
+</html>

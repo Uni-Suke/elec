@@ -1,13 +1,57 @@
 ---
-interface Props {hero?:boolean;}
-const {hero=false}=Astro.props;
+interface Props {
+  hero?: boolean;
+}
+const { hero = false } = Astro.props;
 ---
-<figure class:list={['filter-diagram',{hero}]}>
-<div class="diagram-heading"><span>小さな回路、大きな発見。</span><span class="diagram-code">FIG. 01</span></div>
-<svg viewBox="0 0 480 240" role="img" aria-label="RCローパスフィルタ。入力から抵抗Rを通った出力点とGNDの間にコンデンサCを接続する。">
-<g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M48 82H148m72 0h190M310 82v62m-20 0h40m-40 10h40m-20 0v39m-20 0h40m-33 7h26m-18 7h10"/><rect x="148" y="70" width="72" height="24"/><circle cx="48" cy="82" r="4"/><circle cx="410" cy="82" r="4"/><circle cx="310" cy="82" r="4" fill="currentColor"/></g>
-<g fill="currentColor" font-family="monospace" font-size="15"><text x="171" y="48">R</text><text x="150" y="118">1 kΩ</text><text x="348" y="151">C</text><text x="340" y="174">100 nF</text><text x="24" y="54">Vin</text><text x="385" y="54">Vout</text><text x="291" y="234">GND</text></g>
-<path d="M26 159c9-32 18-32 27 0s18 32 27 0 18-32 27 0" fill="none" stroke="#b8e9c6" stroke-width="2"/><path d="M366 202c9-13 18-13 27 0s18 13 27 0 18-13 27 0" fill="none" stroke="#d3df77" stroke-width="2"/>
-</svg>
-<figcaption><span>RC ローパスフィルタ</span><span>f<sub>c</sub> = 1 / (2πRC)</span></figcaption>
+
+<figure class:list={["filter-diagram", { hero }]}>
+  <div class="diagram-heading">
+    <span>小さな回路、大きな発見。</span>
+    <span class="diagram-code">FIG. 01</span>
+  </div>
+  <svg
+    viewBox="0 0 480 240"
+    role="img"
+    aria-label="RCローパスフィルタ。入力から抵抗Rを通った出力点とGNDの間にコンデンサCを接続する。"
+  >
+    <g
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2.2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      ><path
+        d="M48 82H148m72 0h190M310 82v62m-20 0h40m-40 10h40m-20 0v39m-20 0h40m-33 7h26m-18 7h10"
+      ></path><rect x="148" y="70" width="72" height="24"></rect><circle
+        cx="48"
+        cy="82"
+        r="4"></circle><circle cx="410" cy="82" r="4"></circle><circle
+        cx="310"
+        cy="82"
+        r="4"
+        fill="currentColor"></circle></g
+    >
+    <g fill="currentColor" font-family="monospace" font-size="15"
+      ><text x="171" y="48">R</text><text x="150" y="118">1 kΩ</text><text
+        x="348"
+        y="151">C</text
+      ><text x="340" y="174">100 nF</text><text x="24" y="54">Vin</text><text
+        x="385"
+        y="54">Vout</text
+      ><text x="291" y="234">GND</text></g
+    >
+    <path
+      d="M26 159c9-32 18-32 27 0s18 32 27 0 18-32 27 0"
+      fill="none"
+      stroke="#b8e9c6"
+      stroke-width="2"></path><path
+      d="M366 202c9-13 18-13 27 0s18 13 27 0 18-13 27 0"
+      fill="none"
+      stroke="#d3df77"
+      stroke-width="2"></path>
+  </svg>
+  <figcaption>
+    <span>RC ローパスフィルタ</span><span>f<sub>c</sub> = 1 / (2πRC)</span>
+  </figcaption>
 </figure>

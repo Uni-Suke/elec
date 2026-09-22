@@ -1,5 +1,15 @@
 ---
-interface Props {question:string;answer:string;}
-const {question,answer}=Astro.props;
+interface Props {
+  question: string;
+  answer: string;
+}
+const { question, answer } = Astro.props;
 ---
-<section class="quiz" aria-labelledby="quiz-title"><div class="eyebrow">CHECK YOUR UNDERSTANDING</div><h2 id="quiz-title">考えてみよう</h2><p>{question}</p><details><summary>答えと解説を読む</summary><p>{answer}</p></details></section>
+
+<section class="quiz" aria-labelledby="quiz-title">
+  <div class="eyebrow">CHECK YOUR UNDERSTANDING</div><h2 id="quiz-title">
+    考えてみよう
+  </h2><p>{question}</p><details>
+    <summary>答えと解説を読む</summary><p>{answer}</p>
+  </details>
+</section>
